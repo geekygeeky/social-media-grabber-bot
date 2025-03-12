@@ -23,7 +23,7 @@ export default class Downloader {
         if (result.data?.images) {
           return result.data.images;
         }
-        return `https://www.tikwm.com${result.data.hdplay}`;
+        return `https://www.tikwm.com${result.data.play}`;
       } else {
         return "error";
       }
