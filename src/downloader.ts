@@ -1,8 +1,6 @@
 import axios from "axios";
 import { instagramGetUrl } from "instagram-url-direct";
-const {
-    tiktokDownloader,
-  } = require("happy-dl");
+const { tiktokDownloader } = require("happy-dl");
 
 export default class Downloader {
   url: string;
@@ -12,14 +10,20 @@ export default class Downloader {
 
   public async tiktok(url: string) {
     try {
-      const response = await axios.get(
-        `https://www.tikwm.com/api/?url=${url}&hd=1`
-      );
+      const response = await axios.post("https://www.tikwm.com/api/", {
+        url,
+        count: "12",
+        web: "1",
+        hd: "1",
+      });
 
       const result = response.data;
 
       if (result?.data && result?.msg && result.msg == "success") {
-        return result.data.hdplay;
+        if (result.data?.images) {
+          return result.data.images;
+        }
+        return `https://www.tikwm.com${result.data.hdplay}`;
       } else {
         return "error";
       }

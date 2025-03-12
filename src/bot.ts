@@ -20,6 +20,11 @@ bot.on("message", async (ctx: Context) => {
         await ctx.reply("Failed to fetch media. Please try again.");
         return;
       }
+      if (Array.isArray(videoUrl)) {
+        const result = videoUrl.map((url) => ctx.replyWithPhoto(url));
+        await Promise.allSettled(result);
+        return;
+      }
       await ctx.replyWithVideo(videoUrl);
     } else if (url.includes("instagram.com")) {
       const media = await downloader.ig(url);
