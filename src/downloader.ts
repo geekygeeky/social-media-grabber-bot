@@ -1,6 +1,5 @@
 import axios from "axios";
 import { instagramGetUrl } from "instagram-url-direct";
-const { tiktokDownloader } = require("happy-dl");
 
 export default class Downloader {
   url: string;
