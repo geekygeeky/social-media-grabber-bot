@@ -34,11 +34,11 @@
     "express": "^4.21.2",
     "grammy": "^1.35.0",
     "happy-dl": "^4.1.0",
-    "instagram-url-direct": "^2.0.2"
+    "instagram-url-direct": "^2.0.2",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.10"
   },
   "devDependencies": {
-    "@types/express": "^5.0.0",
-    "@types/node": "^22.13.10",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
