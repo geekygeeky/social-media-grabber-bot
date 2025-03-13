@@ -1,5 +1,10 @@
 import axios from "axios";
-import { instagramGetUrl } from "instagram-url-direct";
+const happyDL = require("happy-dl");
+
+interface InstagramMedia {
+  type: "photo" | "video";
+  url: string;
+}
 
 export default class Downloader {
   url: string;
@@ -33,8 +38,19 @@ export default class Downloader {
 
   public async ig(url: string) {
     try {
-      let data = await instagramGetUrl(url);
-      return data.media_details.map(({ type, url }) => ({ type, url }));
+      // let data = await instagramGetUrl(url);
+      const result = await happyDL.instagramDownloader(url);
+
+      if (!result?.status || !result?.results) {
+        throw Error("Unable to download IG media");
+      }
+
+      const media = result.results;
+
+      return media.map((media: any) => ({
+        type: media.type,
+        url: media.variants[0]?.url,
+      })) as InstagramMedia[];
     } catch (e) {
       console.log(e);
     }
