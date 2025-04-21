@@ -48,6 +48,7 @@ Happy downloading! 🚀
 
    ```env
    BOT_TOKEN=your-telegram-bot-token
+   APP_URL=''
    ```
 
 4. Run the bot:
