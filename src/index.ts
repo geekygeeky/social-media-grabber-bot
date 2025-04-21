@@ -1,11 +1,11 @@
-import { bot } from "./bot";
+import { bot, port, webhookUrl, nodeEnv } from "./bot";
 import { startServer } from "./server";
 
-const isProduction = process.env.NODE_ENV === "production";
+const isProduction =  nodeEnv === "production";
 
 if (isProduction) {
   // Use webhooks in production
-  startServer();
+  startServer({ bot, port, webhookUrl });
 } else {
   // Use polling in development
   bot.start();
