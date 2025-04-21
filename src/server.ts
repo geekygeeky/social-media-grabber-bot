@@ -3,7 +3,7 @@ import { webhookCallback } from "grammy";
 import { ServerProps } from "./types";
 
 export const startServer = (props: ServerProps) => {
-  const { bot, webhookUrl, port = '3000' } = props;
+  const { bot, appUrl, port = '3000' } = props;
 
   const app = express();
 
@@ -13,13 +13,13 @@ export const startServer = (props: ServerProps) => {
   // Set up the webhook endpoint
   app.use("/bot", webhookCallback(bot, "express"));
 
-  if (!webhookUrl) {
+  if (!appUrl) {
     throw new Error("APP_URL is not defined in environment variables.");
   }
 
   const server = app.listen(port, async () => {
     try {
-      await bot.api.setWebhook(`${webhookUrl}/bot`);
+      await bot.api.setWebhook(`${appUrl}/bot`);
       console.log(`Webhook server is running on port ${port}`);
     } catch (error) {
       console.error("Failed to set webhook:", error);
