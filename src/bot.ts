@@ -1,5 +1,5 @@
 import { Bot, Context, InputFile } from "grammy";
-import ytdl from 'ytdl-core';
+import ytdl from "@distube/ytdl-core";
 import {
   BOT_TOKEN,
   PORT as port,
