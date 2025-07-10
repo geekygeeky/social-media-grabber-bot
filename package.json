@@ -32,7 +32,8 @@
     "axios": "^1.8.2",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "grammy": "^1.35.0"
+    "grammy": "^1.35.0",
+    "ytdl-core": "^4.11.5"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
