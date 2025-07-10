@@ -19,10 +19,7 @@ export const startServer = (props: ServerProps) => {
 
   const server = app.listen(port, async () => {
     try {
-      const webhookInfo = await bot.api.getWebhookInfo();
-      if (!webhookInfo?.url) {
-        await bot.api.setWebhook(`${appUrl}/bot`);
-      }
+      await bot.api.setWebhook(`${appUrl}/bot`);
       console.log(`Webhook server is running on port ${port}`);
     } catch (error) {
       console.error("Failed to set webhook:", error);
