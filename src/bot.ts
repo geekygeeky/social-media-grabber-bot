@@ -1,4 +1,4 @@
-import { Bot, Context } from "grammy";
+import { Bot, Context, InputFile } from "grammy";
 import {
   BOT_TOKEN,
   PORT as port,
@@ -44,6 +44,16 @@ bot.on("message", async (ctx: Context) => {
         type === "video" ? ctx.replyWithVideo(url) : ctx.replyWithPhoto(url)
       );
       await Promise.allSettled(result); // Send all media concurrently
+    } else if (url.includes("youtube.com") && url.includes("shorts")) {
+      // Handle Youtube Shorts URL
+      const result = await downloader.youtube(url);
+      const response = await fetch(result.mp4);
+
+      if (!response.ok || !response.body) {
+        throw new Error(`Failed to fetch video: ${response.statusText}`);
+      }
+      await ctx.reply(`Author: ${result.author}\nTitle: ${result.title}`);
+      await ctx.replyWithVideo(new InputFile(response.body)); // Send video
     } else {
       await ctx.reply(
         "Unsupported URL. Please provide a TikTok or Instagram link."
