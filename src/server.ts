@@ -3,7 +3,7 @@ import { webhookCallback } from "grammy";
 import { ServerProps } from "./types";
 
 export const startServer = (props: ServerProps) => {
-  const { bot, appUrl, port = '3000' } = props;
+  const { bot, appUrl, port = "3000" } = props;
 
   const app = express();
 
@@ -19,6 +19,10 @@ export const startServer = (props: ServerProps) => {
 
   const server = app.listen(port, async () => {
     try {
+      const webhookInfo = await bot.api.getWebhookInfo();
+      if (webhookInfo?.url) {
+        await bot.api.deleteWebhook();
+      }
       await bot.api.setWebhook(`${appUrl}/bot`);
       console.log(`Webhook server is running on port ${port}`);
     } catch (error) {
