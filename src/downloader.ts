@@ -2,7 +2,7 @@ import axios from "axios";
 import {
   IG_DOWNLOADER_URL as igDownloaderUrl,
   TIKTOK_DOWNLOADER_URL as tiktokDownloaderUrl,
-  YT_DOWNLOADER_URL as ytDownloaderUrl
+  YT_DOWNLOADER_URL as ytDownloaderUrl,
 } from "./config";
 
 interface InstagramMedia {
@@ -30,13 +30,14 @@ export default class Downloader {
     this.url = url;
   }
 
-  private filterUniqueByThumbnail(data: IGDataItem[]): IGDataItem[] {
+  private filterUniqueByThumbnail(data: InstagramMedia[]): InstagramMedia[] {
     const seen = new Set<string>();
     return data.filter((item) => {
-      if (seen.has(item.thumbnail)) {
+      const url = new URL(item.url);
+      if (seen.has(url.pathname)) {
         return false;
       }
-      seen.add(item.thumbnail);
+      seen.add(url.pathname);
       return true;
     });
   }
@@ -153,18 +154,18 @@ export default class Downloader {
         return [media];
       }
 
-      const mediaItems = this.filterUniqueByThumbnail(result);
-
-      return mediaItems
+      const results = result
         .map((media: IGDataItem) => this.decodeJwtAndGetMedia(media.url))
         .filter<InstagramMedia>((m): m is InstagramMedia => !!m);
+
+      return this.filterUniqueByThumbnail(results);
     } catch (e) {
       console.log(e);
       throw Error("Unable to download IG media at the moment");
     }
   }
 
-    public async youtube(url: string): Promise<YtMedia> {
+  public async youtube(url: string): Promise<YtMedia> {
     try {
       const response = await axios.get(`${ytDownloaderUrl}`, {
         params: { url },
