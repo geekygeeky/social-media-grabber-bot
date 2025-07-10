@@ -1,13 +1,21 @@
 import axios from "axios";
-// import fetch from 'node-fetch';
 import {
   IG_DOWNLOADER_URL as igDownloaderUrl,
   TIKTOK_DOWNLOADER_URL as tiktokDownloaderUrl,
+  YT_DOWNLOADER_URL as ytDownloaderUrl
 } from "./config";
 
 interface InstagramMedia {
   type: "photo" | "video";
   url: string;
+}
+
+interface YtMedia {
+  title: string;
+  author: string;
+  thumbnail: string;
+  mp4: string;
+  mp3: string;
 }
 
 type IGDataItem = {
@@ -150,6 +158,29 @@ export default class Downloader {
       return mediaItems
         .map((media: IGDataItem) => this.decodeJwtAndGetMedia(media.url))
         .filter<InstagramMedia>((m): m is InstagramMedia => !!m);
+    } catch (e) {
+      console.log(e);
+      throw Error("Unable to download IG media at the moment");
+    }
+  }
+
+    public async youtube(url: string): Promise<YtMedia> {
+    try {
+      const response = await axios.get(`${ytDownloaderUrl}`, {
+        params: { url },
+        headers: {
+          "Content-Type": "application/json",
+          "User-Agent": `btch/1.0.1`,
+        },
+      });
+
+      const result = response.data;
+
+      if (!result?.mp4) {
+        throw Error("Unable to download Youtube shorts media");
+      }
+
+      return result;
     } catch (e) {
       console.log(e);
       throw Error("Unable to download IG media at the moment");
