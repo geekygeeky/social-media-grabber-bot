@@ -32,8 +32,7 @@
     "axios": "^1.8.2",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "grammy": "^1.35.0",
-    "happy-dl": "^4.1.0"
+    "grammy": "^1.35.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",

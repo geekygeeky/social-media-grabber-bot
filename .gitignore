@@ -1,3 +1,6 @@
+# Custom bin folder
+_bin
+
 # Logs
 logs
 *.log
