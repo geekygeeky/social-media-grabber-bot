@@ -33,7 +33,7 @@ export default class Downloader {
     });
   }
 
-  private decodeJwtAndGetMediaType(url: string): InstagramMedia["type"] | null {
+  private decodeJwtAndGetMedia(url: string): InstagramMedia | null {
     try {
       const parsedUrl = new URL(url);
       const token = parsedUrl.searchParams.get("token");
@@ -42,8 +42,9 @@ export default class Downloader {
       const [_, payloadB64] = token.split(".");
 
       const payload = JSON.parse(Buffer.from(payloadB64, "base64").toString());
+      const mediaUrl = payload.url;
       const filename = payload.filename;
-      if (!filename || typeof filename !== "string") return null;
+      if (!mediaUrl || !filename || typeof filename !== "string") return null;
 
       const extension = filename.split(".").pop()?.toLowerCase();
 
@@ -53,8 +54,18 @@ export default class Downloader {
       // const audioExtensions = ["mp3", "wav", "aac", "ogg", "m4a", "flac"];
       const imageExtensions = ["jpg", "jpeg", "png", "gif", "webp", "bmp"];
 
-      if (videoExtensions.includes(extension)) return "video";
-      if (imageExtensions.includes(extension)) return "photo";
+      if (videoExtensions.includes(extension)) {
+        return {
+          type: "video",
+          url: mediaUrl,
+        };
+      }
+      if (imageExtensions.includes(extension)) {
+        return {
+          type: "photo",
+          url: mediaUrl,
+        };
+      }
       return null;
     } catch (err) {
       console.error("Invalid JWT format:", err);
@@ -126,26 +137,19 @@ export default class Downloader {
 
       if (result.length == 1) {
         const data = result.at(0) as IGDataItem;
-        const type = this.decodeJwtAndGetMediaType(data.url);
-        if (!type) {
+        const media = this.decodeJwtAndGetMedia(data.url);
+        if (!media) {
           throw Error("Unable to download IG media");
         }
-        return [
-          {
-            type: type,
-            url: data.url,
-          },
-        ];
+
+        return [media];
       }
 
       const mediaItems = this.filterUniqueByThumbnail(result);
 
       return mediaItems
-        .map((media: IGDataItem) => ({
-          type: this.decodeJwtAndGetMediaType(media.url),
-          url: media.url,
-        }))
-        .filter<InstagramMedia>((m): m is InstagramMedia => m.type != null);
+        .map((media: IGDataItem) => this.decodeJwtAndGetMedia(media.url))
+        .filter<InstagramMedia>((m): m is InstagramMedia => !!m);
     } catch (e) {
       console.log(e);
       throw Error("Unable to download IG media at the moment");
